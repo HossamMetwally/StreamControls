@@ -1,0 +1,45 @@
+﻿@page "/CustomComponent"
+
+@code {
+    // Custom C# code
+    string message = "Hello from Custom component!";
+}
+
+<!-- Custom HTML code -->
+<h1>@message</h1>
+
+
+<Syncfusion.Blazor.Navigations.SfTab>
+    >
+    <Syncfusion.Blazor.Navigations.TabItems>
+        <Syncfusion.Blazor.Navigations.TabItem>
+            <ChildContent>
+                <Syncfusion.Blazor.Navigations.TabHeader Text="HTML"></Syncfusion.Blazor.Navigations.TabHeader>
+            </ChildContent>
+            <ContentTemplate>
+                <DashboardLayout></DashboardLayout>
+            </ContentTemplate>
+        </Syncfusion.Blazor.Navigations.TabItem>
+        <Syncfusion.Blazor.Navigations.TabItem>
+            <ChildContent>
+                <Syncfusion.Blazor.Navigations.TabHeader Text="Java"></Syncfusion.Blazor.Navigations.TabHeader>
+            </ChildContent>
+            <ContentTemplate>
+                <SfChart></SfChart>
+            </ContentTemplate>
+        </Syncfusion.Blazor.Navigations.TabItem>
+        <Syncfusion.Blazor.Navigations.TabItem>
+            <ChildContent>
+                <Syncfusion.Blazor.Navigations.TabHeader Text="JavaScript"></Syncfusion.Blazor.Navigations.TabHeader>
+            </ChildContent>
+            <ContentTemplate>@DynamicContent</ContentTemplate>
+        </Syncfusion.Blazor.Navigations.TabItem>
+    </Syncfusion.Blazor.Navigations.TabItems>
+</Syncfusion.Blazor.Navigations.SfTab>
+
+@code {
+    public RenderFragment DynamicContent = builder =>
+    {
+        builder.AddContent(1, "JavaScript (JS) is an interpreted computer programming language. It was originally implemented as part of web browsers so that client-side scripts could interact with the user, control the browser, communicate asynchronously, and alter the document content that was displayed.[5] More recently, however, it has become common in both game development and the creation of desktop applications.");
+    };
+}

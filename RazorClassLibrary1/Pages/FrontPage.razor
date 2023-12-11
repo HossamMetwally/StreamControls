@@ -1,0 +1,19 @@
+﻿@page "/home"
+@code {
+
+}
+<Card></Card>
+
+
+@inject NavigationManager NavigationManager
+
+<Syncfusion.Blazor.Buttons.SfButton CssClass="e-primary" OnClick="NavigateToComponent">
+    Go to Carousel </Syncfusion.Blazor.Buttons.SfButton>
+
+@code {
+    private void NavigateToComponent()
+    {
+        // Replace "your-component-route" with the actual route to your component.
+        NavigationManager.NavigateTo("Carousel");
+    }
+}

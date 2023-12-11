@@ -1,0 +1,172 @@
+﻿@page "/dashboardLayout"
+
+<h3>DashboardLayout</h3>
+@*
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Layouts
+@using Syncfusion.Blazor.Charts
+
+<SfButton OnClick="@AddPanel">Add Chart Panel</SfButton>
+
+<SfDashboardLayout ID="dashboard" Columns="2">
+    <DashboardLayoutPanels>
+        @foreach (var panel in panels)
+        {
+            <DashboardLayoutPanel ID="@panel.Id" SizeX="1" SizeY="1">
+                @if (panel.ContentType == "chart")
+                {
+                    <SfChart>
+                        <ChartSeriesCollection>
+                            <ChartSeries DataSource="@ChartData" XName="XValue" YName="YValue" Type="ChartSeriesType.Line">
+                            </ChartSeries>
+                        </ChartSeriesCollection>
+                    </SfChart>
+                }
+            </DashboardLayoutPanel>
+        }
+    </DashboardLayoutPanels>
+</SfDashboardLayout>
+
+@code {
+    private List<PanelModel> panels = new List<PanelModel>();
+    private List<ChartDataModel> ChartData = new List<ChartDataModel>
+    {
+        new ChartDataModel { XValue = "Jan", YValue = 15 },
+        new ChartDataModel { XValue = "Feb", YValue = 20 },
+        // Add more data points as needed
+    };
+
+    private void AddPanel()
+    {
+        panels.Add(new PanelModel { Id = $"panel{panels.Count}", ContentType = "chart" });
+        StateHasChanged(); // Trigger a UI update
+    }
+
+    class PanelModel
+    {
+        public string Id { get; set; }
+        public string ContentType { get; set; }
+    }
+
+    class ChartDataModel
+    {
+        public string XValue { get; set; }
+        public double YValue { get; set; }
+    }
+} *@
+
+
+@* @using Syncfusion.Blazor.Charts
+@using Syncfusion.Blazor.Layouts
+
+<SfDashboardLayout ID="dashboard" Columns="3">
+    <DashboardLayoutPanels>
+        <DashboardLayoutPanel ID="defaultPanel" SizeX="1" SizeY="1">
+            <div class="chart-container">
+                <SfChart Height="100%" Width="100%">
+                    <ChartSeriesCollection>
+                        <ChartSeries DataSource="@ChartData" XName="XValue" YName="YValue" Type="ChartSeriesType.Line">
+                        </ChartSeries>
+                    </ChartSeriesCollection>
+                </SfChart>
+                <Syncfusion.Blazor.Buttons.SfButton></Syncfusion.Blazor.Buttons.SfButton>
+            </div>
+        </DashboardLayoutPanel>
+    </DashboardLayoutPanels>
+</SfDashboardLayout>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        // Introduce a delay (e.g., 500 milliseconds) before rendering the chart
+        await Task.Delay(500);
+        StateHasChanged();
+    }
+
+
+    private List<ChartDataModel> ChartData = new List<ChartDataModel>
+    {
+        new ChartDataModel { XValue = "Jan", YValue = 15 },
+        new ChartDataModel { XValue = "Feb", YValue = 20 },
+        // Add more data points as needed
+    };
+
+    class ChartDataModel
+    {
+        public string XValue { get; set; }
+        public double YValue { get; set; }
+    }
+}
+<Syncfusion.Blazor.Buttons.SfButton></Syncfusion.Blazor.Buttons.SfButton>
+<SfChart></SfChart>
+
+
+
+
+<style>
+    .chart-container {
+        height: 100%;
+        width: 100%;
+    }
+
+</style>
+
+
+<Syncfusion.Blazor.Buttons.SfButton CssClass="e-primary" Content="Add Panel" @onclick="AddClick"></Syncfusion.Blazor.Buttons.SfButton>
+<SfDashboardLayout @ref="dashboardObject" CellSpacing="@CellSpacing" Columns="@Columns">
+    <DashboardLayoutPanels></DashboardLayoutPanels>
+</SfDashboardLayout>
+
+@code {
+    public class SalesInfo
+    {
+        public string Month { get; set; }
+        public double SalesValue { get; set; }
+    }
+
+    public List<SalesInfo> Sales = new List<SalesInfo>
+            {
+        new SalesInfo { Month = "Jan", SalesValue = 35 },
+        new SalesInfo { Month = "Feb", SalesValue = 28 },
+        new SalesInfo { Month = "Mar", SalesValue = 34 },
+        new SalesInfo { Month = "Apr", SalesValue = 32 },
+        new SalesInfo { Month = "May", SalesValue = 40 },
+        new SalesInfo { Month = "Jun", SalesValue = 32 },
+        new SalesInfo { Month = "Jul", SalesValue = 35 }
+            };
+    SfDashboardLayout? dashboardObject;
+    public double[] CellSpacing = { 10, 10 };
+    public int Columns = 6;
+    public int Count = 0;
+    public int Length { get; set; }
+    public async Task AddClick(EventArgs args)
+    {
+        this.Count = this.Count + 1;
+        string HeaderText = "Panel " + this.Count.ToString();
+        PanelModel panel = new PanelModel
+                {
+                    Id = this.Count.ToString() + "_layout",
+                    SizeX = 2,
+                    SizeY = 2,
+                    Row = 0,
+                    Column = 0,
+                    Enabled = true,
+                    Header = @<div>@HeaderText</div>,
+            Content =@<SfChart>
+        <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category">
+        </ChartPrimaryXAxis>
+        <ChartSeriesCollection>
+            <ChartSeries DataSource="@Sales" XName="Month"
+                         YName="SalesValue" Type="ChartSeriesType.Column">
+                         YName="SalesValue" Type="ChartSeriesType.Column">
+            </ChartSeries>
+        </ChartSeriesCollection>
+    </SfChart>
+        };
+        await dashboardObject.AddPanelAsync(panel);
+    }
+ }
+
+ <br /><br />
+  *@
+ <WeatherAPI></WeatherAPI>

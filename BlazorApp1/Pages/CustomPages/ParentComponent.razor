@@ -1,0 +1,21 @@
+﻿@page "/parent"
+@* 
+<h2>Parent Component</h2>
+
+<button @onclick="AddDynamicComponent">Add Dynamic Component</button>
+
+@if (showDynamicComponent)
+{
+    <CustomComponent></CustomComponent>
+}
+
+@code {
+    bool showDynamicComponent = false;
+
+    void AddDynamicComponent()
+    {
+        // Toggle the showDynamicComponent state to true
+        showDynamicComponent = true;
+    }
+}
+ *@

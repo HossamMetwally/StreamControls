@@ -1,0 +1,106 @@
+﻿old navbar 
+@* <div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">BlazorApp1</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="counter">
+                <span class="oi oi-plus" aria-hidden="true"></span> Counter
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="DataGrid">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Data Grid
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="Chart">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> chart
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="DashboardLayout">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> DashboardLayout
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="Generic">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Generic
+            </NavLink>
+        </div>
+    </nav>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}
+ *@
+//////////////////////
+
+
+    // Method to add a new item
+    // private void AddNewItem()
+    // {
+    //     if (!string.IsNullOrWhiteSpace(newItemName))
+    //     {
+    //         dynamicComponents.Add(builder =>
+    //         {
+    //             builder.OpenComponent(0, typeof(WeatherAPI));
+    //             builder.AddAttribute(1, "ItemName", newItemName);
+    //             builder.CloseComponent();
+    //         });
+
+    //         // Clear the input field after adding the item
+    //         newItemName = "";
+
+    //         // Trigger a re-render to update the dynamic components
+    //         StateHasChanged();
+
+    //     }
+    //     // if (!string.IsNullOrWhiteSpace(newItemName))
+    //     // {
+    //     //     // Create a new DriveData item with the user-entered name and add it to the Drive list
+    //     //     Drive.Add(new DriveData
+    //     //         {
+    //     //             NodeId = Guid.NewGuid().ToString(), // You can generate a unique ID here
+    //     //             NodeText = newItemName,
+    //     //             Expanded = true,
+    //     //             Children = new List<DriveData>(),
+    //     //             NodeUrl = "/new-item-url"
+    //     //         });
+
+
+    //     //     // Clear the input field after adding the item
+    //     //     newItemName = "";
+
+    //     //     // Save the updated list to local storage
+    //     //     await SaveDataToLocalStorage();
+    //     //     await InitializeDriveData();
+    //     //     // Trigger a re-render to update the TreeView
+    //     //     StateHasChanged();
+    //     // }
+
+    //     Console.WriteLine($"Item added: {newItemName}");
+    //     Console.WriteLine($"Total items now: {Drive.Count}");

@@ -1,0 +1,27 @@
+﻿@page "/"
+@using Syncfusion.Licensing;
+
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+
+
+<h2 class="text-success"> Web app Index is running. </h2>
+
+
+@code{
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+}
+
+<SfCalendar TValue="DateTime" />
+<br />
+<Syncfusion.Blazor.Buttons.SfButton CssClass="e-primary" >Button</Syncfusion.Blazor.Buttons.SfButton>
+

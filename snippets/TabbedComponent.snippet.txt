@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Tabbed Component</Title>
+      <Shortcut>tabbedcomponent</Shortcut>
+    </Header>
+    <Snippet>
+      <Code Language="html"><![CDATA[
+<SfTabs>
+    <TabItems>
+        <TabItem Header="Tab 1">
+            <!-- Content for Tab 1 goes here -->
+        </TabItem>
+        <TabItem Header="Tab 2">
+            <!-- Content for Tab 2 goes here -->
+        </TabItem>
+        <!-- Add more tabs as needed -->
+    </TabItems>
+</SfTabs>
+      ]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

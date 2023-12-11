@@ -1,0 +1,28 @@
+﻿<h3>timeDisplay</h3>
+
+@implements IDisposable
+
+<h1>Time: @currentTime</h1>
+
+@code {
+    private string currentTime;
+    private System.Timers.Timer timer;
+
+    protected override void OnInitialized()
+    {
+        currentTime = DateTime.Now.ToString("HH:mm:ss");
+        timer = new System.Timers.Timer(1000);
+        timer.Elapsed += (sender, args) =>
+        {
+            currentTime = DateTime.Now.ToString("HH:mm:ss");
+            InvokeAsync(StateHasChanged); // Re-render the component
+        };
+        timer.AutoReset = true;
+        timer.Start();
+    }
+
+    public void Dispose()
+    {
+        timer?.Dispose();
+    }
+}

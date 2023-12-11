@@ -1,0 +1,21 @@
+﻿@page "/chart"
+
+<h2>Parent Component</h2>
+
+<button class="btn btn-success m-2">Add 1 tab Component</button>
+<button class="btn btn-success m-2">Add 2 tabs Component</button>
+<button class="btn btn-success m-2" @onclick="AddDynamicComponent">Add 3tabs Component</button>
+
+@if (showDynamicComponent)
+{
+    <BlazorApp1.Pages.CustomPages.CustomComponent></BlazorApp1.Pages.CustomPages.CustomComponent>
+}
+@code {
+    bool showDynamicComponent = false;
+
+    void AddDynamicComponent()
+    {
+        // Toggle the showDynamicComponent state to true
+        showDynamicComponent = true;
+    }
+}

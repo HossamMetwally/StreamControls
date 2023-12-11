@@ -1,0 +1,39 @@
+﻿<h3>CurrencyExchange</h3>
+
+@* 
+<SfChart Title="Sales Analysis">
+    <ChartPrimaryXAxis Title="Month" ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
+    <ChartPrimaryYAxis Title="Sales in Dollar"></ChartPrimaryYAxis>
+    <ChartLegendSettings Visible="true"></ChartLegendSettings>
+    <ChartSeriesCollection>
+        <ChartSeries DataSource="@chartData" Name="Sales" XName="Month" YName="SalesValue" Type="ChartSeriesType.Column">
+        </ChartSeries>
+    </ChartSeriesCollection>
+</SfChart>
+
+ *@
+
+@* @code {
+    private class Currency
+    {
+        // Example of making a GET request using HttpClient in Blazor
+        var httpClient = new HttpClient();
+        var apiKey = "b49c41c2d93b47cc9534559921ac2c31";
+        var apiUrl = $"https://open.er-api.com/v6/latest?app_id={apiKey}";
+
+        var response = await httpClient.GetStringAsync(apiUrl);
+
+
+        // Example of deserializing JSON using System.Text.Json in Blazor
+        var exchangeRates = JsonSerializer.Deserialize<ExchangeRatesModel>(response);
+
+
+        // Example: Update chart data with exchange rates
+        var chartData = new ChartData
+            {
+                Labels = exchangeRates.Rates.Keys.ToArray(),
+                Values = exchangeRates.Rates.Values.ToArray()
+            };
+
+    }
+} *@

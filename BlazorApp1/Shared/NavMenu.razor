@@ -1,0 +1,335 @@
+﻿@using BlazorApp1.Pages;
+@using Syncfusion.Blazor.Navigations
+@using System.Text.Json;
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@using System.Threading.Tasks;
+@inject IJSRuntime JSRuntime
+@inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
+
+
+<SfTreeView FullRowNavigable="true" SortOrder="@Syncfusion.Blazor.Navigations.SortOrder.Ascending" TValue="DriveData" CssClass="custom">
+    <TreeViewFieldsSettings NavigateUrl="NodeUrl" TValue="DriveData" Id="NodeId" Text="NodeText"
+                            Child="Children" DataSource="@Drive" Expanded="Expanded"> </TreeViewFieldsSettings>
+</SfTreeView>
+
+<!-- Input field for the new item's name -->
+<div class="input-group mb-3">
+    <input type="text" class="form-control" @bind="newItemName" placeholder="Enter item name" />
+    <div class="input-group-append">
+        <button class="btn btn-primary" type="button" @onclick="AddNewItem">Add New Item</button>
+    </div>
+</div>
+
+
+@if (dynamicComponents.Count > 0)
+{
+    @dynamicComponents[dynamicComponents.Count - 1]
+}
+
+@code {
+
+    public class DriveData
+    {
+        public string NodeId { get; set; }
+        public string NodeText { get; set; }
+        public bool Expanded { get; set; }
+        public bool Selected { get; set; }
+        public List<DriveData> Children;
+        public string NodeUrl { get; set; }
+    }
+
+    List<DriveData> Drive = new List<DriveData>();
+
+
+    // Constructor to ensure default items always exist
+    public NavMenu()
+    {
+        InitializeDefaultItems();
+    }
+
+    private void InitializeDefaultItems()
+    {
+        // logic to add default items to the Drive list
+        List<DriveData> Folder1 = new List<DriveData>();
+
+        Drive.Add(new DriveData
+            {
+                NodeId = "01",
+                NodeText = "Charts",
+                Expanded = true,
+                Children = Folder1,
+                NodeUrl = "/chart"
+            });
+
+        List<DriveData> File1 = new List<DriveData>();
+
+        Folder1.Add(new DriveData
+            {
+                NodeId = "01-01",
+                NodeText = "Dashboard Layout",
+                Children = File1,
+                NodeUrl = "/dashboardLayout"
+            });
+        File1.Add(new DriveData
+            {
+                NodeId = "01-01-01",
+                NodeText = "Windows NT"
+            });
+
+        List<DriveData> File2 = new List<DriveData>();
+
+        Folder1.Add(new DriveData
+            {
+                NodeId = "01-02",
+                NodeText = "Users",
+                Expanded = true,
+                Children = File2
+            });
+        File2.Add(new DriveData
+            {
+                NodeId = "01-02-01",
+                NodeText = "Smith"
+            });
+        File2.Add(new DriveData
+            {
+                NodeId = "01-02-02",
+                NodeText = "Public"
+            });
+
+        List<DriveData> File3 = new List<DriveData>();
+
+        Folder1.Add(new DriveData
+            {
+                NodeId = "01-03",
+                NodeText = "Windows",
+                Children = File3
+            });
+        File3.Add(new DriveData
+            {
+                NodeId = "01-03-01",
+                NodeText = "Boot"
+            });
+
+        List<DriveData> Folder2 = new List<DriveData>();
+
+        Drive.Add(new DriveData
+            {
+                NodeId = "02",
+                NodeText = "Local Disk (D:)",
+                Children = Folder2,
+            });
+        Folder2.Add(new DriveData
+            {
+                NodeId = "02-01",
+                NodeText = "Personals"
+            });
+        Folder2.Add(new DriveData
+            {
+                NodeId = "02-02",
+                NodeText = "Projects"
+            });
+        // For example:
+
+    }
+
+
+    // private bool isFirstRender = true;
+
+    // // Initialize data after the first render
+    // protected override async Task OnAfterRenderAsync(bool firstRender)
+    // {
+    //     if (firstRender && isFirstRender)
+    //     {
+    //         await InitializeDriveData();
+    //         isFirstRender = false;
+    //     }
+    // }
+
+    // Initialize data from local storage or with default items
+    private async Task InitializeDriveData()
+    {
+        try
+        {
+            await localStorage.RemoveItemAsync("driveData");
+
+            var jsonData = await localStorage.GetItemAsStringAsync("driveData");
+            if (!string.IsNullOrWhiteSpace(jsonData))
+            {
+                Drive = JsonSerializer.Deserialize<List<DriveData>>(jsonData);
+            }
+            else
+            {
+                InitializeDefaultItems();
+            }
+        }
+        catch (JsonException jsonEx)
+        {
+            // Log the exception or handle it as needed
+            Console.WriteLine("JSON Error: " + jsonEx.Message);
+
+            InitializeDefaultItems(); // Load default items if JSON data is invalid
+        }
+    }
+
+
+    private async Task SaveDataToLocalStorage()
+    {
+        var jsonData = JsonSerializer.Serialize(Drive);
+        await localStorage.SetItemAsStringAsync("driveData", jsonData);
+    }
+
+
+    private string newItemName = ""; // Store the name entered by the user
+
+
+    private List<RenderFragment> dynamicComponents = new List<RenderFragment>();
+
+
+    // AddNewItem method
+    private async Task AddNewItem()
+    {
+        if (!string.IsNullOrWhiteSpace(newItemName))
+        {
+            // Create a new DriveData item with the user-entered name and add it to the Drive list
+            var newNode = new DriveData
+                {
+                    NodeId = Guid.NewGuid().ToString(), // You can generate a unique ID here
+                    NodeText = newItemName,
+                    Expanded = true,
+                    Children = new List<DriveData>(),
+                    NodeUrl = $"/{newItemName}" 
+                };
+            Drive.Add(newNode);
+
+            // Save the updated list to local storage
+            //await SaveDataToLocalStorage();
+
+            //StateHasChanged();  // Trigger a re-render to update the TreeView
+
+            // Generate a new Razor page file dynamically
+            await GenerateRazorPage(newItemName);
+
+            // Navigate to the new page
+            NavigationManager.NavigateTo($"/{newItemName}");
+
+            // Clear the input field after adding the item
+            newItemName = "";
+        }
+    }
+
+    // private string GenerateUniqueId(string pageName)
+    // {
+    //     // Combine the page name and a timestamp to create a unique identifier
+    //     return $"{pageName}_{DateTime.Now.Ticks}";
+    // }
+
+    private async Task GenerateRazorPage(string pageName)
+    {
+        // Ensure the first letter is capitalized
+        pageName = char.ToUpper(pageName[0]) + pageName.Substring(1);
+
+        // Create a string representing the content of the Razor page
+        string razorPageContent = $@"
+        @page ""/{pageName}""
+        @using BlazorApp1.Pages
+        @inject Blazored.LocalStorage.ILocalStorageService localStorage
+
+        <WeatherAPI ItemName=""{pageName}"" />";
+
+        // Specify the path where the new Razor page file will be created
+        string filePath = $"Pages/Users/{pageName}.razor"; 
+
+        // // Write the content to the new Razor page file
+        File.WriteAllText(filePath, razorPageContent);
+
+        // Optionally, save the updated list to local storage
+        await SaveDataToLocalStorage();
+    }
+
+    // private async Task GenerateRazorPage(string pageName)
+    // {
+    //     // Ensure the first letter is capitalized
+    //     pageName = char.ToUpper(pageName[0]) + pageName.Substring(1);
+
+    //     // Generate a unique identifier for the WeatherAPI instance
+    //     // string uniqueId = GenerateUniqueId(pageName);
+
+    //     // Generate a unique identifier for the WeatherAPI instance
+    //     string uniqueId = Guid.NewGuid().ToString();
+
+    //     // Create a string representing the content of the Razor page
+    //     string razorPageContent = $@"
+    //         @page ""/{pageName}""
+    //         @using BlazorApp1.Pages   
+    //         @inject Blazored.LocalStorage.ILocalStorageService localStorage
+
+    //         <WeatherAPI ItemName=""{pageName}"" UniqueId=""{uniqueId}"" />
+    //         ";
+
+    //     // Create a string representing the content of the Razor component
+    //     // string razorPageContent = $@"
+    //     //     @code {{
+    //     //         [Parameter]
+    //     //         public string? ItemName {{ get; set; }}
+
+    //     //         [Parameter]
+    //     //         public string? UniqueId {{ get; set; }}
+    //     //     }}
+    //     //     <div>
+    //     //         @ItemName
+    //     //     </div>";
+
+    //     // Specify the path where the new Razor page file will be created
+    //     // string filePath = $"Pages/UsersComponents/{pageName}.razor"; // Adjust the path as needed
+
+    //     // Write the content to the new Razor page file
+    //     // File.WriteAllText(filePath, razorPageContent);
+
+    //     // Optionally, save the updated list to local storage
+    //     await SaveDataToLocalStorage();
+
+    //     // Debug output
+    //     Console.WriteLine($"Generated Content for {pageName}:\n{razorPageContent}");
+    // }
+
+}
+
+
+
+
+
+<style>
+    .custom .e-list-item .e-icons {
+        font-family: "Customize-icon";
+    }
+
+
+    @@font-face {
+        font-family: 'Customize-icon';
+        src: url(data:application/x-font-ttf;charset=utf-8;base64,AAEAAAAKAIAAAwAgT1MvMj0gSRcAAAEoAAAAVmNtYXDnEOdaAAABjAAAADhnbHlmcYqIngAAAcwAAAD8aGVhZBWT124AAADQAAAANmhoZWEHmANtAAAArAAAACRobXR4C9AAAAAAAYAAAAAMbG9jYQBAAH4AAAHEAAAACG1heHABEAAxAAABCAAAACBuYW1l/qscPAAAAsgAAAJ5cG9zdIPGFvoAAAVEAAAAVgABAAADUv9qAFoEAAAA//8D6QABAAAAAAAAAAAAAAAAAAAAAwABAAAAAQAAIKcGUl8PPPUACwPoAAAAANlGSVAAAAAA2UZJUAAAAAAD6QPpAAAACAACAAAAAAAAAAEAAAADACUAAwAAAAAAAgAAAAoACgAAAP8AAAAAAAAAAQPwAZAABQAAAnoCvAAAAIwCegK8AAAB4AAxAQIAAAIABQMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUGZFZABA5wDnAQNS/2oAWgPpAJYAAAABAAAAAAAABAAAAAPoAAAD6AAAAAAAAgAAAAMAAAAUAAMAAQAAABQABAAkAAAABAAEAAEAAOcB//8AAOcA//8AAAABAAQAAAABAAIAAAAAAEAAfgADAAAAAAPpA+kACAAWACQAAAEhFSEHMzcnIyUWEAcGICcmEDc+ATIWBQYQFxYgNzYQJy4BIgYCMf6kAWqUqMK8rgF+goKK/qCEfn5Coquf/amRkZoBkpqRkUq3xLcCKmSTybt4if6ghYKChQFgiUJBQRma/m6akZGaAZKaSElJAAMAAAAAA+gD6QAGABQAIgAAASMXNyMRIyUWEAcGICcmEDc+ATIWBQYQFxYgNzYQJy4BIgYBvrLp6JmGAW6BgYf+oYiBgUGhqqH9qZOTmgGOmpOTSrbCtgGy6ekBbwuI/qGHgYGIAV6IQEFBFpr+cZmTk5oBj5lKSUkAAAAAABIA3gABAAAAAAAAAAEAAAABAAAAAAABAA4AAQABAAAAAAACAAcADwABAAAAAAADAA4AFgABAAAAAAAEAA4AJAABAAAAAAAFAAsAMgABAAAAAAAGAA4APQABAAAAAAAKACwASwABAAAAAAALABIAdwADAAEECQAAAAIAiQADAAEECQABABwAiwADAAEECQACAA4ApwADAAEECQADABwAtQADAAEECQAEABwA0QADAAEECQAFABYA7QADAAEECQAGABwBAwADAAEECQAKAFgBHwADAAEECQALACQBdyBDdXN0b21pemUtaWNvblJlZ3VsYXJDdXN0b21pemUtaWNvbkN1c3RvbWl6ZS1pY29uVmVyc2lvbiAxLjBDdXN0b21pemUtaWNvbkZvbnQgZ2VuZXJhdGVkIHVzaW5nIFN5bmNmdXNpb24gTWV0cm8gU3R1ZGlvd3d3LnN5bmNmdXNpb24uY29tACAAQwB1AHMAdABvAG0AaQB6AGUALQBpAGMAbwBuAFIAZQBnAHUAbABhAHIAQwB1AHMAdABvAG0AaQB6AGUALQBpAGMAbwBuAEMAdQBzAHQAbwBtAGkAegBlAC0AaQBjAG8AbgBWAGUAcgBzAGkAbwBuACAAMQAuADAAQwB1AHMAdABvAG0AaQB6AGUALQBpAGMAbwBuAEYAbwBuAHQAIABnAGUAbgBlAHIAYQB0AGUAZAAgAHUAcwBpAG4AZwAgAFMAeQBuAGMAZgB1AHMAaQBvAG4AIABNAGUAdAByAG8AIABTAHQAdQBkAGkAbwB3AHcAdwAuAHMAeQBuAGMAZgB1AHMAaQBvAG4ALgBjAG8AbQAAAAACAAAAAAAAAAoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMBAgEDAQQAFy1hcnJvdy1jaXJjbGUtcmlnaHQtXzAxEi1hcnJvdy1jaXJjbGUtZG93bgAAAAA=) format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+
+
+    /* Target all text elements within the specified hierarchy and their descendants */
+    body > div.page > div > div > ul > li > div.e-text-content.e-icon-wrapper > span,
+    body > div.page > div > div > ul > li * > div.e-text-content > span,
+    body > div.page > div > div > ul > li.e-list-item.e-level-1.e-navigable.e-has-child > ul > li * > div.e-text-content > a > div {
+        color: white !important;
+    }
+
+
+
+    /* Override specific cases */
+    #_active > div.e-text-content.e-icon-wrapper > span {
+        color: white !important;
+    }
+
+    body > div.page > div > div > ul > li.e-list-item.e-level-1.e-navigable.e-has-child > ul > li:nth-child(1) > div.e-text-content.e-icon-wrapper > a {
+        color: white !important;
+    }
+
+</style>
+

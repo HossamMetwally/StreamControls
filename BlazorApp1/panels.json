@@ -1,0 +1,17 @@
+[
+  {
+    "AllowDragging": true,
+    "Column": 0,
+    "CssClass": null,
+    "Enabled": true,
+    "Id": "panel1",
+    "MaxSizeX": null,
+    "MaxSizeY": null,
+    "MinSizeX": 1,
+    "MinSizeY": 1,
+    "Row": 0,
+    "SizeX": 2,
+    "SizeY": 2,
+    "ZIndex": 1000
+  }
+]
